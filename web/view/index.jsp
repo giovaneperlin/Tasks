@@ -20,6 +20,19 @@
         <title>JSP Page</title>
     </head>
     <body>
-        <h1>Hello World!</h1>
+        <nav class="navbar-fixed-top">
+            <div class="container" style="background-color: #265a88; padding: 0px; width: 100%; height: 70px; align-content: center;">
+                <div style="margin-top: 15px;"></div>
+                <h1 style="margin-top: 0px; margin-bottom: 0px; font-weight: bold; text-align: center; color: white;">Password Keeper</h1>
+                <div style="margin-bottom: 15px;"></div>
+            </div>
+        </nav>
+        <div id="container" class="container" style="width: 100%; padding-top: 90px;">
+            <div class="row">
+                <div class="col-md-12">
+                    <h5 style="font-weight: bold;">SÓ PRA NÃO FICAR EM BRANCO</h5>
+                </div>
+            </div>
+        </div>
     </body>
 </html>
