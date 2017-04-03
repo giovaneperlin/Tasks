@@ -11,6 +11,7 @@ public class Connection {
 
     private static void open(String sql) {
         try {
+            DriverManager.registerDriver(new com.mysql.jdbc.Driver());
             conn = DriverManager.getConnection(
                     "jdbc:mysql://localhost/tasks",
                     "root",
@@ -73,9 +74,9 @@ public class Connection {
                 for (Person person : persons) {
                     person.setTasks(selectTasks(person, done));
                 }
+            } else {
+                close();
             }
-
-            close();
 
             return persons;
 
@@ -93,7 +94,9 @@ public class Connection {
             String sql = "SELECT * FROM persons WHERE `name`=?";
 
             open(sql);
+            
             stm.setString(1, name);
+
             ResultSet resultSet = stm.executeQuery();
 
             Person person = null;
@@ -106,8 +109,41 @@ public class Connection {
                 person.setId(resultSet.getInt("id"));
             }
 
-            if (loadData) {
+            if (loadData && person != null) {
                 person.setTasks(selectTasks(person, done));
+            } else {
+                close();
+            }
+
+            return person;
+
+        } catch (SQLException e) {
+
+            return null;
+
+        }
+    }
+
+    //done: 0= task NOT completed, 1= task completed, 2=all tasks
+    //loadData: true=load person's tasks, false= don´t load person's tasks
+    public static Person selectPersonById(int id) {
+        try {
+            String sql = "SELECT * FROM persons WHERE `id`=?";
+
+            open(sql);
+            
+            stm.setInt(1, id);
+            
+            ResultSet resultSet = stm.executeQuery();
+
+            Person person = null;
+
+            while (resultSet.next()) {
+                person = new Person();
+                person.setName(resultSet.getString("name"));
+                person.setAge(resultSet.getInt("age"));
+                person.setRole(resultSet.getString("role"));
+                person.setId(resultSet.getInt("id"));
             }
 
             close();
@@ -145,6 +181,7 @@ public class Connection {
             } else {
                 sql = "SELECT * FROM tasks WHERE `person_id`=?";
                 open(sql);
+                stm.setInt(1, person.getId());
             }
 
             ResultSet resultSet = stm.executeQuery();
@@ -154,7 +191,7 @@ public class Connection {
             while (resultSet.next()) {
                 Task task = new Task();
                 task.setName(resultSet.getString("name"));
-                task.setLength(resultSet.getString("legth"));
+                task.setLength(resultSet.getString("length"));
                 task.setDate(resultSet.getString("date"));
                 task.setField(resultSet.getString("field"));
                 task.setDone(resultSet.getBoolean("done"));
@@ -193,6 +230,45 @@ public class Connection {
             return true;
         } catch (SQLException e) {
             return false;
+        }
+    }
+
+    //done: 0= task NOT completed, 1= task completed, 2=all tasks
+    public static ArrayList<Person> selectTasksByDate(String date) {
+        try {
+
+            String sql = "SELECT * FROM tasks WHERE `date`=?";
+
+            open(sql);
+
+            stm.setString(1, date);
+
+            ResultSet resultSet = stm.executeQuery();
+
+            ArrayList<Person> persons = new ArrayList<Person>();
+
+            while (resultSet.next()) {
+                Task task = new Task();
+                task.setName(resultSet.getString("name"));
+                task.setLength(resultSet.getString("length"));
+                task.setDate(resultSet.getString("date"));
+                task.setField(resultSet.getString("field"));
+                task.setDone(resultSet.getBoolean("done"));
+                task.setId(resultSet.getInt("id"));
+                task.setPersonId(resultSet.getInt("person_id"));
+
+                Person person = selectPersonById(task.getPersonId());
+                person.getTasks().add(task);
+
+                persons.add(person);
+            }
+
+            return persons;
+
+        } catch (SQLException e) {
+
+            return null;
+
         }
     }
 }

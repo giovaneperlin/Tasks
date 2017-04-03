@@ -14,7 +14,7 @@ public class Person implements Serializable {
     private String name;
     private int age;
     private String role;
-    private ArrayList<Task> tasks;
+    private ArrayList<Task> tasks = new ArrayList<Task>();
 
     public Person() {
 
