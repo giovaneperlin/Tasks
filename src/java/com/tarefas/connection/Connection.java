@@ -15,7 +15,7 @@ public class Connection {
             conn = DriverManager.getConnection(
                     "jdbc:mysql://localhost/tasks",
                     "root",
-                    "barril135");
+                    "");
             stm = conn.prepareStatement(sql);
         } catch (SQLException e) {
             System.out.println("Não foi possivel connectar ao banco.\n" + e);
@@ -165,7 +165,7 @@ public class Connection {
 
             if (done != 2) {
 
-                sql = "SELECT * FROM tasks WHERE `person_id`=? AND `done`=?";
+                sql = "SELECT * FROM tasks WHERE `person_id`=?";
                 open(sql);
                 stm.setInt(1, person.getId());
 
@@ -194,7 +194,6 @@ public class Connection {
                 task.setLength(resultSet.getString("length"));
                 task.setDate(resultSet.getString("date"));
                 task.setField(resultSet.getString("field"));
-                task.setDone(resultSet.getBoolean("done"));
                 task.setId(resultSet.getInt("id"));
                 task.setPersonId(resultSet.getInt("person_id"));
 
@@ -214,7 +213,7 @@ public class Connection {
 
     public static boolean insertTask(Task task) {
         try {
-            String sql = "INSERT INTO `tasks`(`name`, `length`, `date`, `field`, `done`, `person_id`) VALUES (?, ?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO `tasks`(`name`, `length`, `date`, `field`, `person_id`) VALUES (?, ?, ?, ?, ?, ?)";
 
             open(sql);
 
@@ -222,7 +221,6 @@ public class Connection {
             stm.setString(2, task.getLength());
             stm.setString(3, task.getDate());
             stm.setString(4, task.getField());
-            stm.setBoolean(5, task.isDone());
             stm.setInt(6, task.getPersonId());
             stm.execute();
             close();
@@ -253,7 +251,6 @@ public class Connection {
                 task.setLength(resultSet.getString("length"));
                 task.setDate(resultSet.getString("date"));
                 task.setField(resultSet.getString("field"));
-                task.setDone(resultSet.getBoolean("done"));
                 task.setId(resultSet.getInt("id"));
                 task.setPersonId(resultSet.getInt("person_id"));
 

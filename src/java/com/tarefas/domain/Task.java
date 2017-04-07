@@ -13,20 +13,18 @@ public class Task {
     private String length;
     private String date;
     private String field;
-    private boolean done;
 
     public Task() {
 
     }
 
-    public Task(int id, int personId, String name, String length, String date, String field, boolean done) {
+    public Task(int id, int personId, String name, String length, String date, String field) {
         this.id = id;
         this.personId = personId;
         this.name = name;
         this.length = length;
         this.date = date;
         this.field = field;
-        this.done = done;
     }
 
     public int getId() {
@@ -75,13 +73,5 @@ public class Task {
 
     public void setField(String field) {
         this.field = field;
-    }
-
-    public boolean isDone() {
-        return done;
-    }
-
-    public void setDone(boolean done) {
-        this.done = done;
     }
 }

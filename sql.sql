@@ -12,9 +12,8 @@ CREATE TABLE IF NOT EXISTS `tasks` (
     `id` INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `name` VARCHAR(45) DEFAULT NULL,
     `length` VARCHAR(45) DEFAULT NULL,
-    `date` VARCHAR(45) DEFAULT NULL,
+    `date` DATE DEFAULT NULL,
     `field` VARCHAR(45) DEFAULT NULL,
-    `done` BOOLEAN DEFAULT FALSE,
     `person_id` INT(11) NOT NULL,
     FOREIGN KEY(`person_id`) REFERENCES `person`(`id`)
 );

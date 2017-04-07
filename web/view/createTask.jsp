@@ -105,18 +105,6 @@
                         <label for="field">Área:</label>
                         <input type="text" class="form-control" name="field" id="field" placeholder="Digite a área da tarefa" required>
                     </div>
-                    <div class="radio">
-                        <label>
-                            <input type="radio" name="done" id="notDone" value="false" checked>
-                            Não Finalizada
-                        </label>
-                    </div>
-                    <div class="radio">
-                        <label>
-                            <input type="radio" name="done" id="done" value="true">
-                            Finalizada
-                        </label>
-                    </div>
                     <div class="row">
                         <div class="col-md-2 pull-right">
                             <input type="reset" class="btn btn-block btn-default" value="Limpar">
