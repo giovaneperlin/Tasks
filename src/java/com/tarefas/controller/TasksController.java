@@ -30,14 +30,6 @@ public class TasksController {
 
     }
 
-    @RequestMapping("/createTask")
-    public String createTask(Model model) {
-        ArrayList<Person> persons = Connection.selectPersons(false, 2);
-        model.addAttribute("persons", persons);
-
-        return "createTask";
-    }
-
     @RequestMapping("/createdPerson")
     public String createdPerson(Model model, Person person) {
         if (person != null) {
@@ -48,6 +40,14 @@ public class TasksController {
             }
         }
         return "createPerson";
+    }
+
+    @RequestMapping("/createTask")
+    public String createTask(Model model) {
+        ArrayList<Person> persons = Connection.selectPersons(false, 2);
+        model.addAttribute("persons", persons);
+
+        return "createTask";
     }
 
     @RequestMapping("/createdTask")

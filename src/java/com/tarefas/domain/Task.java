@@ -10,21 +10,23 @@ public class Task {
     private int id;
     private int personId;
     private String name;
-    private String length;
+    private int length;
     private String date;
     private String field;
+    private boolean done;
 
     public Task() {
 
     }
 
-    public Task(int id, int personId, String name, String length, String date, String field) {
+    public Task(int id, int personId, String name, int length, String date, String field, boolean done) {
         this.id = id;
         this.personId = personId;
         this.name = name;
         this.length = length;
         this.date = date;
         this.field = field;
+        this.done = done;
     }
 
     public int getId() {
@@ -51,11 +53,11 @@ public class Task {
         this.name = name;
     }
 
-    public String getLength() {
+    public int getLength() {
         return length;
     }
 
-    public void setLength(String length) {
+    public void setLength(int length) {
         this.length = length;
     }
 
@@ -73,5 +75,13 @@ public class Task {
 
     public void setField(String field) {
         this.field = field;
+    }
+
+    public boolean isDone() {
+        return done;
+    }
+
+    public void setDone(boolean done) {
+        this.done = done;
     }
 }

@@ -2,6 +2,7 @@ package com.tarefas.connection;
 
 import com.tarefas.domain.*;
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class Connection {
@@ -94,7 +95,7 @@ public class Connection {
             String sql = "SELECT * FROM persons WHERE `name`=?";
 
             open(sql);
-            
+
             stm.setString(1, name);
 
             ResultSet resultSet = stm.executeQuery();
@@ -131,9 +132,9 @@ public class Connection {
             String sql = "SELECT * FROM persons WHERE `id`=?";
 
             open(sql);
-            
+
             stm.setInt(1, id);
-            
+
             ResultSet resultSet = stm.executeQuery();
 
             Person person = null;
@@ -157,52 +158,61 @@ public class Connection {
         }
     }
 
-    //done: 0= task NOT completed, 1= task completed, 2=all tasks
+    //done: 0= tasks NOT completed, 1= tasks completed, 2=all tasks
     public static ArrayList<Task> selectTasks(Person person, int done) {
         try {
 
             String sql = null;
 
-            if (done != 2) {
-
-                sql = "SELECT * FROM tasks WHERE `person_id`=?";
-                open(sql);
-                stm.setInt(1, person.getId());
-
-                if (done == 0) {
-
-                    stm.setBoolean(2, false);
-
-                } else {
-
-                    stm.setBoolean(2, true);
-
-                }
-            } else {
-                sql = "SELECT * FROM tasks WHERE `person_id`=?";
-                open(sql);
-                stm.setInt(1, person.getId());
-            }
+            sql = "SELECT * FROM tasks WHERE `person_id`=?";
+            open(sql);
+            stm.setInt(1, person.getId());
 
             ResultSet resultSet = stm.executeQuery();
 
-            ArrayList<Task> tasks = new ArrayList<Task>();
+            ArrayList<Task> tasksNotCompleted = new ArrayList<Task>();
+            ArrayList<Task> tasksCompleted = new ArrayList<Task>();
 
             while (resultSet.next()) {
+
+                String date = resultSet.getString("date");
+                int length = resultSet.getInt("length");
+
+                LocalDate taskDate = java.time.LocalDate.parse(date);
+                taskDate = taskDate.plusDays(length);
+
+                LocalDate actualDate = java.time.LocalDate.now();
+
                 Task task = new Task();
                 task.setName(resultSet.getString("name"));
-                task.setLength(resultSet.getString("length"));
-                task.setDate(resultSet.getString("date"));
+                task.setLength(length);
+                task.setDate(date);
                 task.setField(resultSet.getString("field"));
                 task.setId(resultSet.getInt("id"));
                 task.setPersonId(resultSet.getInt("person_id"));
 
-                tasks.add(task);
+                if (taskDate.isBefore(actualDate) || taskDate.isEqual(actualDate)) {
+                    task.setDone(true);
+                    tasksCompleted.add(task);
+                } else {
+                    task.setDone(false);
+                    tasksNotCompleted.add(task);
+                }
             }
 
             close();
 
-            return tasks;
+            if (done == 2) {
+                tasksCompleted.addAll(tasksNotCompleted);
+                return tasksCompleted;
+            }
+            if (done == 1) {
+                return tasksCompleted;
+            }
+            if (done == 0) {
+                return tasksNotCompleted;
+            }
+            return null;
 
         } catch (SQLException e) {
 
@@ -213,15 +223,14 @@ public class Connection {
 
     public static boolean insertTask(Task task) {
         try {
-            String sql = "INSERT INTO `tasks`(`name`, `length`, `date`, `field`, `person_id`) VALUES (?, ?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO `tasks`(`name`, `length`, `date`, `field`, `person_id`) VALUES (?, ?, ?, ?, ?)";
 
             open(sql);
-
             stm.setString(1, task.getName());
-            stm.setString(2, task.getLength());
-            stm.setString(3, task.getDate());
+            stm.setInt(2, task.getLength());
+            stm.setDate(3, Date.valueOf(task.getDate()));
             stm.setString(4, task.getField());
-            stm.setInt(6, task.getPersonId());
+            stm.setInt(5, task.getPersonId());
             stm.execute();
             close();
 
@@ -239,7 +248,7 @@ public class Connection {
 
             open(sql);
 
-            stm.setString(1, date);
+            stm.setDate(1, Date.valueOf(date));
 
             ResultSet resultSet = stm.executeQuery();
 
@@ -248,8 +257,8 @@ public class Connection {
             while (resultSet.next()) {
                 Task task = new Task();
                 task.setName(resultSet.getString("name"));
-                task.setLength(resultSet.getString("length"));
-                task.setDate(resultSet.getString("date"));
+                task.setLength(resultSet.getInt("length"));
+                task.setDate(resultSet.getDate("date").toString());
                 task.setField(resultSet.getString("field"));
                 task.setId(resultSet.getInt("id"));
                 task.setPersonId(resultSet.getInt("person_id"));
