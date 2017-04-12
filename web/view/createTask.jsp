@@ -95,7 +95,7 @@
                     </div>
                     <div class="form-group">
                         <label for="length">Duração:</label>
-                        <input type="text" class="form-control" name="length" id="length" placeholder="Digite a duração da tarefa" required>
+                        <input type="number" class="form-control" name="length" id="length" placeholder="Digite a duração, em dias, da tarefa" required>
                     </div>
                     <div class="form-group">
                         <label for="date">Data:</label>

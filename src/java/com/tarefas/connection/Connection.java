@@ -1,8 +1,12 @@
 package com.tarefas.connection;
 
 import com.tarefas.domain.*;
-import java.sql.*;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class Connection {
@@ -172,6 +176,7 @@ public class Connection {
 
             ArrayList<Task> tasksNotCompleted = new ArrayList<Task>();
             ArrayList<Task> tasksCompleted = new ArrayList<Task>();
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
             while (resultSet.next()) {
 
@@ -186,7 +191,7 @@ public class Connection {
                 Task task = new Task();
                 task.setName(resultSet.getString("name"));
                 task.setLength(length);
-                task.setDate(date);
+                task.setDate(dtf.format(java.time.LocalDate.parse(date)));
                 task.setField(resultSet.getString("field"));
                 task.setId(resultSet.getInt("id"));
                 task.setPersonId(resultSet.getInt("person_id"));
@@ -228,7 +233,7 @@ public class Connection {
             open(sql);
             stm.setString(1, task.getName());
             stm.setInt(2, task.getLength());
-            stm.setDate(3, Date.valueOf(task.getDate()));
+            stm.setDate(3, java.sql.Date.valueOf(task.getDate()));
             stm.setString(4, task.getField());
             stm.setInt(5, task.getPersonId());
             stm.execute();
@@ -248,7 +253,7 @@ public class Connection {
 
             open(sql);
 
-            stm.setDate(1, Date.valueOf(date));
+            stm.setDate(1, java.sql.Date.valueOf(date));
 
             ResultSet resultSet = stm.executeQuery();
 
